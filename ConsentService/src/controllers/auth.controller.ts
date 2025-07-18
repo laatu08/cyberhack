@@ -38,7 +38,7 @@ export const registerHandler = async (
       },
     });
 
-    await logToElastic(` Registered user ${email}`, "User Registration");
+    await logToElastic({ userId: user.id, email: user.email, role: user.role, event:"User Registration" }, "User Registration");
     res.status(201).json({
       message: "User registered successfully",
       user: {
@@ -82,7 +82,7 @@ export const loginHandler = async (
       { expiresIn: "1d" }
     );
 
-    await logToElastic(`🔓 Logged in user ${email}`, "User Login");
+    await logToElastic({ userId: user.id, email: user.email, role: user.role, event: "User Login" }, "User Login");
     res.status(200).json({
       message: "Login successful",
       token,
@@ -96,7 +96,7 @@ export const loginHandler = async (
   } catch (error) {
         // console.log(error);
 
-    await logToElastic("Error logging in user:", "User Login");
+    await logToElastic({ event: "Error logging in user" }, "User Login");
     res.status(500).json({ message: "Login failed", error });
   }
 };

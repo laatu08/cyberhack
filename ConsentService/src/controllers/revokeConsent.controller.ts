@@ -24,7 +24,7 @@ export const requestRevokeConsentHandler = async (
 
     // Simulate sending the revoke request to bank
     await logToElastic(
-      `Revoke request ${revokeRequest.id} created for consent ${consentId}`,
+      { userId, consentId, revokeRequestId: revokeRequest.id, event: "Revoke Request Created" },
       "Revoke Request"
     );
 
@@ -33,7 +33,7 @@ export const requestRevokeConsentHandler = async (
       revokeRequest,
     });
   } catch (error) {
-    await logToElastic("Error creating revoke request: " + error, "Revoke Request");
+    await logToElastic({ event: "Error creating revoke request", error }, "Revoke Request");
     res.status(500).json({ message: "Failed to create revoke request" });
   }
 };
@@ -66,12 +66,14 @@ export const handleBankRevokeStatusHandler = async (
 
     if (status === "approved") {
       await revokeConsent(request.consentId);
-      await logToElastic(`Consent ${request.consentId} revoked via bank approval`, "Revoke Request");
+      await logToElastic({ consentId: request.consentId, status, event: "Revoke Request Approved" }, "Revoke Request");
+    } else if(status==="rejected") {
+      await logToElastic({ consentId: request.consentId, status, event: "Revoke Request Rejected" }, "Revoke Request");
     }
 
     res.status(200).json({ message: `Revoke request ${status}` });
   } catch (error) {
-    await logToElastic("Error updating revoke request status: " + error, "Revoke Request");
+    await logToElastic({ event: "Error updating revoke request status", error }, "Revoke Request");
     res.status(500).json({ message: "Failed to update revoke request status" });
   }
 };
@@ -84,10 +86,10 @@ export const getPendingRevokeRequestsForUserHandler = async (
     const userId = req.params.userId!;
     
     const pendingRequests = await getPendingRevokeRequestsForUser(userId);
-
+    await logToElastic({ userId, event: "Fetch User Pending Revoke Requests" }, "Revoke Request");
     res.status(200).json({ pendingRequests });
   } catch (error) {
-    await logToElastic("Error fetching user pending revoke requests: " + error, "Revoke Request");
+    await logToElastic({ event: "Error fetching user pending revoke requests", error }, "Revoke Request");
     res.status(500).json({ message: "Failed to fetch user revoke requests" });
   }
 };
@@ -99,10 +101,10 @@ export const getAllPendingRevokeRequestsHandler = async (
 ): Promise<void> => {
   try {
     const pendingRequests = await getAllPendingRevokeRequests();
-
+    await logToElastic({ event: "Fetch All Pending Revoke Requests" }, "Revoke Request");
     res.status(200).json({ pendingRequests });
   } catch (error) {
-    await logToElastic("Error fetching all pending revoke requests: " + error, "Revoke Request");
+    await logToElastic({ event: "Error fetching all pending revoke requests", error }, "Revoke Request");
     res.status(500).json({ message: "Failed to fetch revoke requests" });
   }
 };

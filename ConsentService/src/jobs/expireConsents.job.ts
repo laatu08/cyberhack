@@ -6,7 +6,7 @@ import { logToElastic } from "../utils/logger";
 export const startConsentExpirationJob = () => {
   // Runs every hour at minute 0 → "0 * * * *"
   cron.schedule("*/10 * * * *", async () => {
-    await logToElastic("⏳ Consent expiration job started","Expiration Job");
+    await logToElastic({ time:"10m",event: "Consent expiration job started" }, "Expiration Job");
 
     try {
       const now = new Date();
@@ -25,12 +25,12 @@ export const startConsentExpirationJob = () => {
       });
 
       await logToElastic(
-        `✅ Expired ${expiredConsents.count} consents at ${now.toISOString()}`,
+        { count: expiredConsents.count, event: "Expired consents processed" , time: new Date().toISOString() },
         "Expiration Job"
       );
     } catch (error) {
       await logToElastic(
-        "❌ Error expiring consents:",
+        { event: "Error expiring consents", error },
         "Expiration Job"
       );
     }

@@ -20,10 +20,10 @@ export const createConsentHandler = async (
     // const consent = await createConsent(body, userId);
     const consent = await createConsent(body);
 
-    await logToElastic(`Consent created for user ${req.body?.id}`, "Consent Creation");
+    await logToElastic({ userId: req.user?.id, consentId: consent.id, event: "Consent Creation" }, "Consent Creation");
     res.status(201).json({ consent });
   } catch (error) {
-    await logToElastic("Error creating consent: " + error, "Consent Creation");
+    await logToElastic({ event: "Error creating consent", error }, "Consent Creation");
     res.status(500).json({ message: "Failed to create consent", error });
   }
 };
@@ -36,9 +36,10 @@ export const getUserConsentsHandler = async (
   try {
     const userId = req.user?.id!;
     const consents = await getUserConsents(userId);
+    await logToElastic({ userId, event: "Fetch User Consents" }, "Consent Retrieval");
     res.status(200).json({ consents });
   } catch (error) {
-    await logToElastic("Error fetching user consents: " + error, "Consent Retrieval");
+    await logToElastic({ event: "Error fetching user consents", error }, "Consent Retrieval");
     res.status(500).json({ message: "Failed to fetch consents" });
   }
 };
@@ -50,9 +51,10 @@ export const getUserConsentsHandlerForBank = async (
   try {
     const userId = req.params.id;
     const consents = await getUserConsents(userId);
+    await logToElastic({ userId, event: "Bank Fetch User Consents" }, "Consent Retrieval");
     res.status(200).json({ consents });
   } catch (error) {
-    await logToElastic("Error fetching user consents: " + error, "Consent Retrieval");
+    await logToElastic({ event: "Error fetching user consents", error }, "Consent Retrieval");
     res.status(500).json({ message: "Failed to fetch consents" });
   }
 };
@@ -96,10 +98,10 @@ export const checkConsentHandler = async (
       appId as string,
       field as string
     );
-
+    await logToElastic({ userId, appId, field, allowed, event: "Consent Check" }, "Consent Check");
     res.status(200).json({ allowed });
   } catch (error) {
-    await logToElastic("Error checking consent: " + error, "Consent Check");
+    await logToElastic({ event: "Error checking consent", error }, "Consent Check");
     res.status(500).json({ message: "Failed to check consent" });
   }
 };
