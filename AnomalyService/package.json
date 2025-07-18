@@ -17,7 +17,7 @@
     "prisma": "^6.11.1"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^8.13.0",
+    "@elastic/elasticsearch": "^8.18.2",
     "@prisma/client": "^6.11.1",
     "concurrently": "^9.2.0",
     "cookie-parser": "^1.4.7",

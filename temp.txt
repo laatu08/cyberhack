@@ -1,0 +1,27 @@
+// credentials
+elastic_api_key = c0wtc0haZ0JzNlZHQUVmSlpHUWU6bDdrZWxtSjFhTWI4U3ljYi16YlpVQQ==
+endpoint = https://my-elasticsearch-project-ffe17c.es.ap-southeast-1.aws.elastic.cloud:443
+
+// install elastic client for 
+npm install @elastic/elasticsearch
+
+// export and use this client
+const { Client } = require('@elastic/elasticsearch');
+const client = new Client({
+  node: 'https://my-elasticsearch-project-ffe17c.es.ap-southeast-1.aws.elastic.cloud:443',
+  auth: {
+    apiKey: 'c0wtc0haZ0JzNlZHQUVmSlpHUWU6bDdrZWxtSjFhTWI4U3ljYi16YlpVQQ=='
+  },
+  serverMode: 'serverless',
+});
+const createResponse = client.indices.create({
+  index: 'search-mt71',
+  mappings: {
+    properties: {
+      text: { type: 'semantic_text'}
+    },
+  });
+}
+console.log(createResponse);
+
+
