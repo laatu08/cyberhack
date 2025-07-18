@@ -1,5 +1,5 @@
 export const getAnomalyQuery = (
-  index = "vaultguard-logs",
+  index = "vaultguard-token-logs",
   threshold = 10,
   windowMinutes = 5
 ) => ({
@@ -51,10 +51,10 @@ export const getAlertsQuery = (index = "alerts", userId = null) => ({
   size: 1000,
   query: userId
     ? {
-        bool: {
-          must: [{ term: { "userId.keyword": userId } }],
-        },
-      }
+      bool: {
+        must: [{ term: { "userId.keyword": userId } }],
+      },
+    }
     : { match_all: {} },
 });
 

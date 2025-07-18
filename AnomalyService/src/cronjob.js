@@ -13,7 +13,7 @@ dotenv.config();
 async function job() {
   // get anomalies
   const anomalies = await getAnomalies({
-    index: "vaultguard-logs",
+    index: "vaultguard-token-logs",
     threshold: 5,
     windowMinutes: 1,
   });
@@ -86,13 +86,13 @@ async function job() {
   console.log('🔍 Cronjob waiting for Elasticsearch...');
   await waitForElasticsearch();
   console.log('✅ Cronjob starting anomaly detection...');
-  
+
   let i = 1;
   while (true) {
     try {
       // console.log("Iteration: ", i);
       await job();
-      await sleep(5 * 1000);
+      await sleep(60 * 1000);
       i++;
     } catch (error) {
       console.error('❌ Error in cronjob iteration:', error);

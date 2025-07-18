@@ -7,7 +7,7 @@ import {
 
 // Fetch aggregated anomalies from the vaultguard-logs index.
 export async function getAnomalies({
-  index = "vaultguard-logs",
+  index = "vaultguard-token-logs",
   threshold = 10,
   windowMinutes = 5,
 }) {
@@ -59,7 +59,7 @@ export async function checkAlertExists({
       await elasticClient.indices.create({ index });
       console.log(`[+] Created new index: ${index}`);
     }
-  
+
     const query = getAlertExistsQuery({ userId, field, appId, index });
     const response = await elasticClient.search(query);
     return response.hits.total.value > 0;

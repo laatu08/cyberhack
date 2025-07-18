@@ -5,9 +5,9 @@ dotenv.config();
 
 // ✅ Create Elasticsearch client for Elastic Cloud Serverless
 export const elasticClient = new Client({
-  node: "https://my-elasticsearch-project-ffe17c.es.ap-southeast-1.aws.elastic.cloud:443",
+  node: process.env.ELASTIC_URL,
   auth: {
-    apiKey: "c0wtc0haZ0JzNlZHQUVmSlpHUWU6bDdrZWxtSjFhTWI4U3ljYi16YlpVQQ==",// Store securely in .env
+    apiKey: process.env.ELASTIC_API_KEY,
   },
   serverless: true, // ✅ Required for Elastic Cloud Serverless
   maxRetries: 5,
