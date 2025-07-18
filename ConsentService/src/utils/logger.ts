@@ -2,6 +2,9 @@ import pino, { Logger } from "pino";
 import pinoElasticsearch, {
   Options as PinoElasticsearchOptions,
 } from "pino-elasticsearch";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 interface VaultGuardLog {
   startup?: boolean;
@@ -10,7 +13,7 @@ interface VaultGuardLog {
 
 const streamToElastic = pinoElasticsearch({
   index: "vaultguard-consent-logs",
-  node: "http://elasticsearch:9200",
+  node: process.env.ELASTIC_URL,
   esVersion: 8,
   serializer: (log: VaultGuardLog): Record<string, any> => ({
     "@timestamp": new Date().toISOString(),
