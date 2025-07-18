@@ -6,7 +6,7 @@ import {
   getUserConsents,
 } from "../services/consent.service";
 // @ts-ignore
-import logger from "../utils/logger";
+import { logToElastic } from "../utils/logger";
 
 // POST /consent
 export const createConsentHandler = async (
@@ -20,10 +20,10 @@ export const createConsentHandler = async (
     // const consent = await createConsent(body, userId);
     const consent = await createConsent(body);
 
-    logger.info(`Consent created for user ${req.body?.id}`);
+    await logToElastic(`Consent created for user ${req.body?.id}`, "Consent Creation");
     res.status(201).json({ consent });
   } catch (error) {
-    logger.error("Error creating consent: " + error);
+    await logToElastic("Error creating consent: " + error, "Consent Creation");
     res.status(500).json({ message: "Failed to create consent", error });
   }
 };
@@ -38,7 +38,7 @@ export const getUserConsentsHandler = async (
     const consents = await getUserConsents(userId);
     res.status(200).json({ consents });
   } catch (error) {
-    logger.error("Error fetching user consents: " + error);
+    await logToElastic("Error fetching user consents: " + error, "Consent Retrieval");
     res.status(500).json({ message: "Failed to fetch consents" });
   }
 };
@@ -52,8 +52,7 @@ export const getUserConsentsHandlerForBank = async (
     const consents = await getUserConsents(userId);
     res.status(200).json({ consents });
   } catch (error) {
-    logger.error("Error fetching user consents: " + error);
-    console.log(error);
+    await logToElastic("Error fetching user consents: " + error, "Consent Retrieval");
     res.status(500).json({ message: "Failed to fetch consents" });
   }
 };
@@ -100,7 +99,7 @@ export const checkConsentHandler = async (
 
     res.status(200).json({ allowed });
   } catch (error) {
-    logger.error("Error checking consent: " + error);
+    await logToElastic("Error checking consent: " + error, "Consent Check");
     res.status(500).json({ message: "Failed to check consent" });
   }
 };

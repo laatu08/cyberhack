@@ -66,6 +66,8 @@ services:
       - PORT=${CONSENT_SERVICE_PORT}
       - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
+      - ELASTIC_URL=${ELASTIC_URL}
+      - ELASTIC_API_KEY=${ELASTIC_API_KEY}
       - NODE_ENV=${NODE_ENV}
     env_file:
       - .env

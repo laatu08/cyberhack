@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { prisma } from "../prisma/client";
 // @ts-ignore
-import logger from "../utils/logger";
+import { logToElastic } from "../utils/logger";
 const JWT_SECRET = process.env.JWT_SECRET as string || "DEzrWh1vo6MJ6JTtvlFr0lujcKj5ISDn2thqUAv2zgZap56ZgC4SnHmeNh3MoSYR";
 
 // POST /auth/register
@@ -38,7 +38,7 @@ export const registerHandler = async (
       },
     });
 
-    logger.info(` Registered user ${email}`);
+    await logToElastic(` Registered user ${email}`, "User Registration");
     res.status(201).json({
       message: "User registered successfully",
       user: {
@@ -49,7 +49,7 @@ export const registerHandler = async (
       },
     });
   } catch (error) {
-    logger.error("Error registering user:", error);
+    await logToElastic("Error registering user:", "User Registration");
     res.status(500).json({ message: "Registration failed", error });
   }
 };
@@ -82,7 +82,7 @@ export const loginHandler = async (
       { expiresIn: "1d" }
     );
 
-    logger.info(`🔓 Logged in user ${email}`);
+    await logToElastic(`🔓 Logged in user ${email}`, "User Login");
     res.status(200).json({
       message: "Login successful",
       token,
@@ -96,7 +96,7 @@ export const loginHandler = async (
   } catch (error) {
         // console.log(error);
 
-    logger.error("Error logging in user:", error);
+    await logToElastic("Error logging in user:", "User Login");
     res.status(500).json({ message: "Login failed", error });
   }
 };
