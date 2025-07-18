@@ -39,28 +39,41 @@ const Dashboard: React.FC<DashboardProps> = ({ email, onLogout, onToast }) => {
     console.log('📊 Selected fields updated:', selectedFields);
   }, [selectedFields]);
   const handleGetData = async () => {
-    console.log('📊 Get data button clicked with selected fields:', selectedFields);
-    
+    console.log(
+      "📊 Get data button clicked with selected fields:",
+      selectedFields
+    );
+
     if (selectedFields.length === 0) {
-      console.log('📊 No fields selected, showing error toast');
-      onToast('Please select at least one field', 'error');
+      console.log("📊 No fields selected, showing error toast");
+      onToast("Please select at least one field", "error");
       return;
     }
 
-    console.log('📊 Starting data fetch process');
+    console.log("📊 Starting data fetch process");
+    setFetchedData(null);
     setIsLoading(true);
     try {
-      console.log('📊 Calling getData API...');
+      console.log("📊 Calling getData API...");
       const response = await authAPI.getData({ email, fields: selectedFields });
-      console.log('📊 GetData API call successful, response:', response);
-      setFetchedData(response.data);
-      console.log('📊 Fetched data set to state:', response.data);
-      onToast('Data fetched successfully!', 'success');
-    } catch (error) {
-      console.error('📊 Data fetch failed:', error);
-      onToast('Failed to fetch data. Please try again.', 'error');
+      console.log("📊 GetData API call successful, response:", response);
+      const data = response.data;
+
+      if (!data || Object.keys(data).length === 0) {
+        console.log("📊 Response is empty");
+        setFetchedData({}); // So UI knows it's not loading anymore, but empty
+        onToast("No fields were allowed by user consent.", "info");
+      } else {
+        setFetchedData(data);
+        console.log("📊 Fetched data set to state:", data);
+        onToast("Data fetched successfully!", "success");
+      }
+    } catch (error: any) {
+      console.log(error);
+      setFetchedData({}); // force empty display
+      onToast("No fields were allowed by user consent.", "error");
     } finally {
-      console.log('📊 Data fetch process completed, setting loading to false');
+      console.log("📊 Data fetch process completed, setting loading to false");
       setIsLoading(false);
     }
   };
