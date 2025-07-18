@@ -1,4 +1,4 @@
-import logger from "../utils/logger";
+import { logToElastic } from "../utils/logger";
 import redisClient from "../utils/redis";
 
 (async () => {
@@ -12,7 +12,7 @@ import redisClient from "../utils/redis";
 
     const [, token] = expiredKey.split(":");
 
-    logger.info(
+    await logToElastic(
       {
         event: "token_expired",
         token,

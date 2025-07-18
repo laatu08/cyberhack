@@ -1,38 +1,26 @@
-import pino, { Logger } from "pino";
-import pinoElasticsearch, {
-  Options as PinoElasticsearchOptions,
-} from "pino-elasticsearch";
-import dotenv from "dotenv"
+import { Client } from "@elastic/elasticsearch";
+const { ELASTIC_URL, ELASTIC_API_KEY } = process.env;
 
-dotenv.config();
-
-interface VaultGuardLog {
-  startup?: boolean;
-  [key: string]: any;
+if (!ELASTIC_URL || !ELASTIC_API_KEY) {
+  throw new Error("Missing ELASTIC_URL or ELASTIC_API_KEY in env");
 }
 
-const streamToElastic = pinoElasticsearch({
-  index: "vaultguard-token-logs",
-  node: process.env.ELASTIC_URL,
-  esVersion: 8,
-  serializer: (log: VaultGuardLog): Record<string, any> => ({
-    "@timestamp": new Date().toISOString(),
-    ...log,
-  }),
-} as PinoElasticsearchOptions);
-
-streamToElastic.on("error", (error: any) => {
-  console.error("Elastic log error:", error?.message || error);
-  if (error?.meta?.body?.error) {
-    console.error(
-      "Meta error:",
-      JSON.stringify(error.meta.body.error, null, 2)
-    );
-  }
+const client = new Client({
+  node: ELASTIC_URL,
+  auth: { apiKey: ELASTIC_API_KEY },
+  tls: { rejectUnauthorized: false },
 });
 
-const logger: Logger = pino({ level: "info" }, streamToElastic);
-
-logger.info({ startup: true }, "VaultGuard booted");
-
-export default logger;
+export async function logToElastic(logData: any, message: string) {
+  try {
+    await client.index({
+      index: "vaultguard-token-logs",
+      document: { "@timestamp": new Date().toISOString(), message, ...logData },
+    });
+  } catch (err: any) {
+    console.error(
+      "Failed to log to Elasticsearch:",
+      err?.meta?.body?.error || err
+    );
+  }
+}

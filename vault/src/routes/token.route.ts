@@ -1,7 +1,7 @@
 import { createHmac } from "crypto";
 import { Request, Response, Router } from "express";
 import { decryptFields, encryptFields } from "../utils/cryptoUtils";
-import logger from "../utils/logger";
+import { logToElastic } from "../utils/logger";
 import { maskValue } from "../utils/masker";
 import redis from "../utils/redis";
 
@@ -73,8 +73,8 @@ router.post(
       await redis.setEx(`vault:${token}`, ttl * 60, JSON.stringify(payload));
 
       tokens[field] = token;
-
-      logger.info(
+      console.log("New logger");
+      await logToElastic(
         {
           event: "tokenize",
           userId,
@@ -105,7 +105,10 @@ router.post(
 
       if (!raw) {
         result[field] = "EXPIRED";
-        logger.warn({ event: "detokenize", field, token }, "Token expired");
+        await logToElastic(
+          { event: "detokenize", field, token },
+          "Token expired"
+        );
         continue;
       }
 
@@ -113,7 +116,7 @@ router.post(
       const value = decryptFields(encrypted, key, iv);
       result[field] = mask ? maskValue(value) : value;
 
-      logger.info(
+      await logToElastic(
         {
           event: "detokenize",
           field,

@@ -1,5 +1,5 @@
 import { decryptFields } from "../utils/cryptoUtils";
-import logger from "../utils/logger";
+import { logToElastic } from "../utils/logger";
 import redisClient from "../utils/redis";
 
 interface MetaData {
@@ -27,7 +27,7 @@ export async function tryInternalRefresh(
 
   const masked = value.length > 4 ? value.slice(0, 2) + "****" : "****";
 
-  logger.info(
+  await logToElastic(
     {
       event: "internal-refresh",
       userId,

@@ -92,7 +92,7 @@ async function job() {
     try {
       // console.log("Iteration: ", i);
       await job();
-      await sleep(60 * 1000);
+      await sleep(5 * 1000);
       i++;
     } catch (error) {
       console.error('❌ Error in cronjob iteration:', error);
