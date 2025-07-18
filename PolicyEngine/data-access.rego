@@ -27,3 +27,15 @@ allow if {
   input.purpose == "credit scoring"
   input.field == "credit_score"
 }
+
+allow if {
+  input.appId == "z-pay-app"
+  input.purpose == "payment"
+  input.field == "balance"
+}
+
+allow if {
+  input.appId == "z-pay-app"
+  input.purpose == "payment"
+  input.field == "accountNo"
+}

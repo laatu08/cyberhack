@@ -31,7 +31,6 @@ router.post("/", async (req, res) => {
     });
 
     const tokenizedFields = bankRes.data.tokenizedFields;
-    console.log(tokenizedFields);
     if (!tokenizedFields || Object.keys(tokenizedFields).length === 0) {
       return res.status(403).json({ message: "No data returned by bank" });
     }
@@ -41,7 +40,6 @@ router.post("/", async (req, res) => {
       tokens: tokenizedFields,
       appId:APP_ID,
     });
-    console.log(detokenRes);
 
     // Step 3: Return final detokenized data
     return res.json({ data: detokenRes.data });
