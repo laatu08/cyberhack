@@ -95,13 +95,9 @@ const Dashboard: React.FC<DashboardProps> = ({ email, onLogout, onToast }) => {
         onToast("Data fetched successfully!", "success");
       }
     } catch (error: any) {
-      if (error.response && error.response.status === 403) {
-        // User denied all requested fields by consent
-        setFetchedData({}); // force empty display
-        onToast("No fields were allowed by user consent.", "info");
-      } else {
-        onToast("Failed to fetch data. Please try again.", "error");
-      }
+      console.log(error);
+      setFetchedData({}); // force empty display
+      onToast("No fields were allowed by user consent.", "error");
     } finally {
       console.log("📊 Data fetch process completed, setting loading to false");
       setIsLoading(false);
