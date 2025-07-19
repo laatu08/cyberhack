@@ -56,7 +56,7 @@ router.post("/", async (req, res) => {
             userId: user.id,
             appId,
             field,
-            purpose
+            purpose,
           },
         }
       );
@@ -70,12 +70,21 @@ router.post("/", async (req, res) => {
       if (value === undefined) continue;
 
       // Add to tokenization request
-      requestedData[field] = {
-        value: String(value),
-        ttl: 5,
-        mask: true,
-        renewable: true,
-      };
+      if (field === "balance") {
+        requestedData[field] = {
+          value: String(value),
+          ttl: 5,
+          mask: false,
+          renewable: true,
+        };
+      } else {
+        requestedData[field] = {
+          value: String(value),
+          ttl: 5,
+          mask: true,
+          renewable: true,
+        };
+      }
 
       allowedFields.push(field);
     }
