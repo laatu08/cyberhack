@@ -5,6 +5,65 @@ import { prisma } from "../prisma/client";
 // @ts-ignore
 import { logToElastic } from "../utils/logger";
 const JWT_SECRET = process.env.JWT_SECRET as string || "DEzrWh1vo6MJ6JTtvlFr0lujcKj5ISDn2thqUAv2zgZap56ZgC4SnHmeNh3MoSYR";
+import { generateAccountNumber } from "../utils/generate";
+
+export const createUser = async (req: Request, res: Response) => {
+  try {
+    const { name, email, password } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Step 1: Create the user
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+      },
+    });
+
+    // Step 2: Generate a random balance
+    const balance = Math.floor(Math.random() * 90000) + 10000;
+    const transactions = [
+      { date: "2024-05-01", type: "credit", amount: 10000 },
+      { date: "2024-05-02", type: "debit", amount: 2000 },
+      { date: "2024-06-15", type: "credit", amount: 5000 },
+    ];
+
+    // Step 3: Create account detail linked to this user
+    await prisma.accountDetail.create({
+      data: {
+        userId: user.id,
+        accountNo: generateAccountNumber(),
+        balance,
+        transactions
+      },
+    });
+
+    res.status(201).json({ message: "User and account created", userId: user.id });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: "User creation failed", details: err });
+  }
+};
+
+export const getAllUsers = async (_: Request, res: Response) => {
+  const users = await prisma.user.findMany();
+  res.json(users);
+};
+
+export const getAccountByUserId = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  const account = await prisma.accountDetail.findUnique({
+    where: { userId },
+  });
+
+  if (!account) {
+    return res.status(404).json({ error: "Account not found" });
+  }
+
+  res.json(account);
+};
 
 // POST /auth/register
 export const registerHandler = async (

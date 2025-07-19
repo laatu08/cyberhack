@@ -7,6 +7,7 @@ import { startConsentExpirationJob } from "./jobs/expireConsents.job";
 import authRoutes from "./routes/auth.routes";
 import consentRoutes from "./routes/consent.routes";
 import userRoutes from "./routes/user.routes";
+import bankRoutes from "./routes/bank.routes";
 // @ts-ignore
 
 dotenv.config();
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use("/api", consentRoutes);
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);
+app.use("/bank/user", bankRoutes);
 
 app.get("/", (_req, res) => {
   res.send("Consent Service is running");
