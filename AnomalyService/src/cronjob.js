@@ -15,7 +15,7 @@ async function job() {
   const anomalies = await getAnomalies({
     index: "vaultguard-token-logs",
     threshold: 5,
-    windowMinutes: 1,
+    windowMinutes: 5,
   });
 
   if (!anomalies || anomalies?.length === 0) {
@@ -76,7 +76,7 @@ async function job() {
       field,
       appId,
       count,
-      timeRange: "1 minutes",
+      timeRange: "5 minutes",
       timestamp: new Date().toISOString(),
     });
   }
@@ -92,10 +92,10 @@ async function job() {
     try {
       // console.log("Iteration: ", i);
       await job();
-      await sleep(60 * 1000);
+      await sleep(10 * 1000);
       i++;
     } catch (error) {
-      console.error('❌ Error in cronjob iteration:', error);
+      console.error("❌ Error in cronjob iteration:", error);
       await sleep(120 * 1000); // Wait longer on error
     }
   }

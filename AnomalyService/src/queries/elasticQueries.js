@@ -1,7 +1,7 @@
 export const getAnomalyQuery = (
   index = "vaultguard-token-logs",
   threshold = 10,
-  windowMinutes = 5
+  windowMinutes = 5,
 ) => ({
   index,
   size: 0,
@@ -11,7 +11,7 @@ export const getAnomalyQuery = (
         { term: { event: "tokenize" } },
         {
           range: {
-            time: {
+            "@timestamp": {
               gte: `now-${windowMinutes}m`,
               lte: "now",
             },
@@ -51,16 +51,20 @@ export const getAlertsQuery = (index = "alerts", userId = null) => ({
   size: 1000,
   query: userId
     ? {
-      bool: {
-        must: [{ term: { "userId.keyword": userId } }],
-      },
-    }
+        bool: {
+          must: [{ term: { "userId.keyword": userId } }],
+        },
+      }
     : { match_all: {} },
 });
 
-
 // Check if an alert exists for a user + field + company
-export const getAlertExistsQuery = ({ userId, field, appId, index = "alerts" }) => ({
+export const getAlertExistsQuery = ({
+  userId,
+  field,
+  appId,
+  index = "alerts",
+}) => ({
   index: index,
   size: 1,
   _source: false,
@@ -69,8 +73,8 @@ export const getAlertExistsQuery = ({ userId, field, appId, index = "alerts" }) 
       must: [
         { term: { "userId.keyword": userId } },
         { term: { "field.keyword": field } },
-        { term: { "appId.keyword": appId } }
-      ]
-    }
-  }
+        { term: { "appId.keyword": appId } },
+      ],
+    },
+  },
 });
