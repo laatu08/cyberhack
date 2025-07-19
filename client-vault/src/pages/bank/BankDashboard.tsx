@@ -37,7 +37,7 @@ export const BankDashboard: React.FC = () => {
     if (!selectedUser) return;
 
     if (userViewTab === "revokes") fetchRevokeRequests();
-    else if (userViewTab === "alerts") fetchUserAlerts(selectedUser.id);
+    // else if (userViewTab === "alerts") fetchUserAlerts(selectedUser.id);
     else if (userViewTab === "consents") fetchUserConsents(selectedUser.id);
   }, [userViewTab, selectedUser]);
 
@@ -286,7 +286,7 @@ export const BankDashboard: React.FC = () => {
               >
                 Revoke Requests
               </button>
-              <button
+              {/* <button
                 onClick={() => setUserViewTab("alerts")}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
                   userViewTab === "alerts"
@@ -295,7 +295,7 @@ export const BankDashboard: React.FC = () => {
                 }`}
               >
                 Alerts
-              </button>
+              </button> */}
             </nav>
           </div>
 
@@ -370,18 +370,29 @@ export const BankDashboard: React.FC = () => {
                           <p className="text-sm text-gray-600">
                             Requested: {formatDateTime(request.createdAt)}
                           </p>
-                          <span
-                            className={`inline-block mt-2 px-2 py-1 rounded-full text-xs font-medium ${
-                              request.status === "pending"
-                                ? "bg-amber-100 text-amber-800"
-                                : request.status === "approved"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
-                            }`}
-                          >
-                            {request.status}
-                          </span>
-                        </div>
+                          </div>
+                            {request.status === "pending" && (
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() =>
+                        handleProcessRevoke(request.id, "approved")
+                      }
+                      className="flex items-center space-x-1 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700"
+                    >
+                      <Check className="h-4 w-4" />
+                      <span>Approve</span>
+                    </button>
+                    <button
+                      onClick={() =>
+                        handleProcessRevoke(request.id, "rejected")
+                      }
+                      className="flex items-center space-x-1 px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                    >
+                      <X className="h-4 w-4" />
+                      <span>Reject</span>
+                    </button>
+                  </div>
+                )}
                       </div>
                     </div>
                   ))
@@ -389,7 +400,7 @@ export const BankDashboard: React.FC = () => {
             </div>
           )}
 
-          {userViewTab === "alerts" && (
+          {/* {userViewTab === "alerts" && (
             <div className="space-y-4">
               {loading ? (
                 <div className="flex justify-center h-32 items-center">
@@ -421,7 +432,7 @@ export const BankDashboard: React.FC = () => {
                 ))
               )}
             </div>
-          )}
+          )} */}
         </>
       )}
     </div>
@@ -456,6 +467,9 @@ export const BankDashboard: React.FC = () => {
                   </h4>
                   <p className="text-sm text-gray-600">
                     User ID: {request.userId}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    User Email: {request.user.email}
                   </p>
                   <p className="text-sm text-gray-600">
                     Requested: {formatDateTime(request.createdAt)}

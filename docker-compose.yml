@@ -169,6 +169,17 @@ services:
       - .env
     restart: unless-stopped
 
+  main-vault:
+    build:
+      context: ./client-main
+    ports:
+      - "${CLIENT_MAIN_PORT}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+    env_file:
+      - .env
+    restart: unless-stopped
+
   redis:
     image: redis:7
     ports:
