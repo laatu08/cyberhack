@@ -40,9 +40,10 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ onVerificationSen
       onToast('OTP sent to your email', 'success');
       console.log('📧 Calling onVerificationSent callback');
       onVerificationSent(email);
-    } catch (error) {
+    } catch (error:any) {
       console.error('📧 Email verification failed:', error);
-      onToast('Failed to send OTP. Please try again.', 'error');
+      console.log(error.response.data.message);
+      onToast(error.response.data.message || 'Failed to send OTP. Please try again.', 'error');
     } finally {
       console.log('📧 Email verification process completed, setting loading to false');
       setIsLoading(false);

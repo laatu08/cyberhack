@@ -55,7 +55,12 @@ export const getAllPendingRevokeRequests = async () => {
       status: "pending",
     },
     include: {
-      consent: true,
+      consent: {
+        select: {
+          id: true,
+          appId: true,
+        },
+      },
       user: {
         select: {
           id: true,
@@ -66,3 +71,4 @@ export const getAllPendingRevokeRequests = async () => {
     },
   });
 };
+

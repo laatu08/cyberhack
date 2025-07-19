@@ -90,7 +90,7 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ email, onVerified, on
             <button
               type="submit"
               disabled={isLoading || otp.length !== 6}
-              className="flex-1 bg-green-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
+              className="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
             >
               {isLoading ? (
                 <LoadingSpinner />

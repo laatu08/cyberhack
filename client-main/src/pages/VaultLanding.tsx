@@ -56,7 +56,7 @@ const VaultLanding: React.FC = () => {
               <Shield className="w-10 h-10 text-white" />
             </div>
             <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-              Vault
+              VaultGuard
             </h1>
           </div>
           {/* <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8">

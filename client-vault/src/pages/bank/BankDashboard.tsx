@@ -368,6 +368,9 @@ export const BankDashboard: React.FC = () => {
                             Consent ID: {request.consentId}
                           </h4>
                           <p className="text-sm text-gray-600">
+                            App: {request.consent.appId.toUpperCase()}
+                          </p>
+                          <p className="text-sm text-gray-600">
                             Requested: {formatDateTime(request.createdAt)}
                           </p>
                           </div>
@@ -470,6 +473,9 @@ export const BankDashboard: React.FC = () => {
                   </p>
                   <p className="text-sm text-gray-600">
                     User Email: {request.user.email}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    App: {request.consent.appId.toUpperCase()}
                   </p>
                   <p className="text-sm text-gray-600">
                     Requested: {formatDateTime(request.createdAt)}
