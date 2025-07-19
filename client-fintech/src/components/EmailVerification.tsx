@@ -11,6 +11,7 @@ interface EmailVerificationProps {
 const EmailVerification: React.FC<EmailVerificationProps> = ({ onVerificationSent, onToast }) => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   console.log('📧 EmailVerification component rendered');
 
@@ -19,11 +20,16 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ onVerificationSen
     console.log('📧 Email input changed:', newEmail);
     setEmail(newEmail);
   };
+
+  const handleTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setAcceptedTerms(e.target.checked);
+  };
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log('📧 Email verification form submitted with email:', email);
     
-    if (!email) return;
+    if (!email || !acceptedTerms) return;
 
     console.log('📧 Starting email verification process');
     setIsLoading(true);
@@ -70,9 +76,22 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ onVerificationSen
             />
           </div>
 
+          <div className="flex items-start space-x-2 text-sm text-gray-700">
+            <input
+              id="terms"
+              type="checkbox"
+              checked={acceptedTerms}
+              onChange={handleTermsChange}
+              className="mt-1"
+            />
+            <label htmlFor="terms">
+              I agree to the <a href="#" className="text-blue-600 underline">terms of service</a> and <a href="#" className="text-blue-600 underline">privacy policy</a>.
+            </label>
+          </div>
+
           <button
             type="submit"
-            disabled={isLoading || !email}
+            disabled={isLoading || !email || !acceptedTerms}
             className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all duration-200 flex items-center justify-center gap-2"
           >
             {isLoading ? (
@@ -86,11 +105,6 @@ const EmailVerification: React.FC<EmailVerificationProps> = ({ onVerificationSen
           </button>
         </form>
 
-        <div className="mt-8 text-center">
-          <p className="text-xs text-gray-500">
-            By continuing, you agree to our terms of service and privacy policy.
-          </p>
-        </div>
       </div>
     </div>
   );

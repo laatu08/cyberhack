@@ -1,6 +1,6 @@
 import express from "express";
 import axios from "axios";
-import { APP_ID } from "../config";
+import { APP_ID, PURPOSE } from "../config";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -28,6 +28,7 @@ router.post("/", async (req, res) => {
       email,
       fields,
       appId:APP_ID,
+      purpose: PURPOSE,
     });
 
     const tokenizedFields = bankRes.data.tokenizedFields;

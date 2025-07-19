@@ -47,7 +47,8 @@ export const revokeConsent = async (id: string): Promise<Consent> => {
 export const checkConsent = async (
   userId: string,
   appId: string,
-  field: string
+  field: string,
+  purpose:string
 ): Promise<boolean> => {
   // console.log('checkConsent service called with:', { userId, appId, field });
 
@@ -56,6 +57,7 @@ export const checkConsent = async (
       userId,
       appId,
       revoked: false,
+      purpose,
       expiresAt: {
         gte: new Date(),
       },

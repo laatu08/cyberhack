@@ -86,7 +86,7 @@ export const checkConsentHandler = async (
 ): Promise<void> => {
   try {
     console.log("Calling controller");
-    const { userId, appId, field } = req.query;
+    const { userId, appId, field, purpose } = req.query;
 
     if (!userId || !appId || !field) {
       res.status(400).json({ message: "Missing query parameters" });
@@ -96,7 +96,8 @@ export const checkConsentHandler = async (
     const allowed = await checkConsent(
       userId as string,
       appId as string,
-      field as string
+      field as string,
+      purpose as string
     );
     await logToElastic({ userId, appId, field, allowed, event: "Consent Check" }, "Consent Check");
     res.status(200).json({ allowed });

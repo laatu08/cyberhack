@@ -1,6 +1,6 @@
 import express from "express";
 import axios from "axios";
-import { APP_ID } from "../config";
+import { APP_ID,PURPOSE } from "../config";
 import { fintechUsers } from "../data/user";
 
 import dotenv from "dotenv";
@@ -19,6 +19,7 @@ router.post("/", async (req, res) => {
       email,
       otp,
       appId: APP_ID,
+      purpose: PURPOSE
     });
 
     if (response.data.status === "success") {
@@ -29,7 +30,9 @@ router.post("/", async (req, res) => {
     }
   } catch (err: any) {
     console.log(err);
-    return res.status(500).json({ message: err?.response?.data?.message || "Verification failed" });
+    return res.status(err?.response?.status || 500).json({
+      message: err?.response?.data?.reason || "Verification failed",
+    });
   }
 });
 

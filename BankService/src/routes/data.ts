@@ -22,12 +22,12 @@ interface TokenizeResponse {
  * }
  */
 router.post("/", async (req, res) => {
-  const { email, fields, appId } = req.body;
+  const { email, fields, appId, purpose } = req.body;
 
-  if (!email || !Array.isArray(fields) || !appId) {
+  if (!email || !Array.isArray(fields) || !appId || !purpose) {
     return res
       .status(400)
-      .json({ message: "Missing or invalid email, fields, or appId" });
+      .json({ message: "Missing or invalid email, fields, appId, or purpose" });
   }
 
   try {
@@ -56,6 +56,7 @@ router.post("/", async (req, res) => {
             userId: user.id,
             appId,
             field,
+            purpose
           },
         }
       );

@@ -15,11 +15,11 @@ interface PolicyResponse {
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const { email, otp, appId } = req.body;
-  if (!email || !otp || !appId) {
+  const { email, otp, appId, purpose } = req.body;
+  if (!email || !otp || !appId || !purpose) {
     return res
       .status(400)
-      .json({ status: "error", message: "Missing email, otp, or appId" });
+      .json({ status: "error", message: "Missing email, otp, appId, or purpose" });
   }
 
   const expectedOtp = otpStore[email];
@@ -68,6 +68,14 @@ router.post("/", async (req, res) => {
         .json({ status: "rejected", reason: "Unknown app" });
     }
 
+     // 🔒 Purpose mismatch check
+    if (template.purpose !== purpose) {
+      return res.status(403).json({
+        status: "rejected",
+        reason: "Purpose mismatch with consent template",
+      });
+    }
+
     const allowedFields: string[] = [];
 
     // policy check
@@ -102,7 +110,7 @@ router.post("/", async (req, res) => {
     return res.json({ status: "success", allowedFields });
   } catch (err: any) {
     console.error("Consent creation failed:", err);
-    return res.status(500).json({
+    return res.status(err.response.status || 500).json({
       status: "error",
       reason: "Consent creation failed",
       error: err?.response?.data || err.message,
