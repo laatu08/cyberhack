@@ -39,7 +39,7 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-4">
                   <div className="text-sm">
-                    <p className="font-medium text-gray-900">{user.name}</p>
+                    <p className="font-medium text-gray-900">{user.name.toUpperCase()}</p>
                     <p className="text-gray-500 capitalize">{user.role}</p>
                   </div>
                   <button
