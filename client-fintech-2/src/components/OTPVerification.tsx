@@ -107,8 +107,8 @@ const OTPVerification: React.FC<OTPVerificationProps> = ({ email, onVerified, on
         <div className="mt-6 text-center">
           <p className="text-sm text-gray-500">
             Didn't receive the code?{' '}
-            <button className="text-green-600 hover:text-blue-700 font-semibold">
-              Resend
+            <button onClick={handleBack} className="text-green-600 hover:text-blue-700 font-semibold">
+              Try again
             </button>
           </p>
         </div>
