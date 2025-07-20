@@ -13,41 +13,6 @@ VaultGuard is a microservices-based platform that provides:
 - **Purpose Binding**: Prevents fintech apps from changing data usage purpose after consent
 - **Just-in-Time Access**: No pre-download of data, tokens expire automatically
 
-## 🏗️ Architecture
-
-The system follows a microservices architecture with the following components:
-
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Client Apps   │    │   Vault Client  │    │   Bank Portal   │
-│  (Fintech UIs)  │    │   (Dashboard)   │    │   (Admin UI)    │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         └───────────────────────┼───────────────────────┘
-                                 │
-         ┌───────────────────────┼───────────────────────┐
-         │                       │                       │
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│  Fintech Service│    │ Consent Service │    │  Bank Service   │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         └───────────────────────┼───────────────────────┘
-                                 │
-         ┌───────────────────────┼───────────────────────┐
-         │                       │                       │
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│ Tokenizer/Vault │    │ Policy Service  │    │ Anomaly Service │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         └───────────────────────┼───────────────────────┘
-                                 │
-         ┌───────────────────────┼───────────────────────┐
-         │                       │                       │
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│     Redis       │    │  Elasticsearch  │    │   PostgreSQL    │
-│   (Caching)     │    │   (Logging)     │    │  (Database)     │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-```
 
 ## 👤 Complete User Flow
 
@@ -152,8 +117,8 @@ The system follows a microservices architecture with the following components:
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
-   cd vaultguard
+   git clone https://github.com/laatu08/cyberhack
+   cd cyberhack
    ```
 
 2. **Configure environment variables**
@@ -164,11 +129,11 @@ The system follows a microservices architecture with the following components:
 
 3. **Start the entire system**
    ```bash
-   docker-compose up -d
+   docker compose up --build
    ```
 
 4. **Access the applications**
-   - **Main Portal**: http://localhost:3006
+   - **Main Portal**: http://localhost:9000
    - **Vault Dashboard**: http://localhost:3000
    - **Z-Pay Fintech**: http://localhost:3001
    - **Budget App Fintech**: http://localhost:3005
@@ -253,7 +218,7 @@ The system follows a microservices architecture with the following components:
 
 ### Client Applications
 
-#### 🏠 Main Portal (Port 3006)
+#### 🏠 Main Portal (Port 9000)
 - **Purpose**: Central landing page and navigation
 - **Features**:
   - Service overview
@@ -635,82 +600,6 @@ GET /get-all-alerts             # Get all users with alerts (bank)
 GET /get-alerts-user/:userId    # Get specific user alerts (bank)
 ```
 
-## 🚨 Troubleshooting
-
-### Common Issues
-
-1. **Service Connection Errors**
-   ```bash
-   # Check service health
-   docker-compose ps
-   
-   # View service logs
-   docker-compose logs [service-name]
-   ```
-
-2. **Database Connection Issues**
-   ```bash
-   # Check database connection (using cloud PostgreSQL)
-   # Verify DATABASE_URL in .env file
-   docker-compose logs consent-service
-   ```
-
-3. **Redis Connection Problems**
-   ```bash
-   # Restart Redis
-   docker-compose restart redis
-   
-   # Check Redis connectivity
-   docker-compose exec redis redis-cli ping
-   ```
-
-4. **Elasticsearch Issues**
-   ```bash
-   # Check Elasticsearch connection (cloud-based)
-   # Verify ELASTIC_URL and ELASTIC_API_KEY in .env
-   docker-compose logs anomaly-service
-   ```
-
-5. **OTP Email Issues**
-   ```bash
-   # Verify email configuration
-   # Check EMAIL_USER and EMAIL_PASS in .env
-   docker-compose logs bank-service
-   ```
-
-### Debug Mode
-
-Enable debug logging:
-```bash
-# Set environment variable
-NODE_ENV=development
-DEBUG=*
-```
-
-### Common User Issues
-
-1. **"User not found in bank"**: Create bank account first via Main Portal
-2. **"Invalid OTP"**: Check email spam folder, OTP expires in 10 minutes
-3. **"No fields allowed by consent"**: Check policy configuration for app
-4. **"Token expired"**: Tokens have TTL, re-authenticate if needed
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-### Code Style
-
-- Use TypeScript for all new code
-- Follow ESLint configuration
-- Write comprehensive tests
-- Document API changes
-- Follow microservices principles
-- Maintain security-first approach
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -724,15 +613,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **React** and **Tailwind CSS** for frontend development
 - **Docker** for containerization
 - **PostgreSQL** for reliable data storage
-
-## 📞 Support
-
-For support and questions:
-- Create an issue in the repository
-- Contact the development team
-- Check the documentation wiki
-- Review the troubleshooting guide above
-
----
 
 **VaultGuard** - Securing financial data sharing through advanced tokenization, granular consent management, and purpose-bound access control.
