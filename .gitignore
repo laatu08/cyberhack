@@ -141,3 +141,4 @@ dist
 
 me.txt
 node_modules
+.env
