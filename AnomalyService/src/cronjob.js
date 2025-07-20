@@ -36,21 +36,21 @@ async function job() {
 
   async function sendAlerts({ userId, field, appId, count }) {
     // check if alert already exists (meaning email previously sent)
-    // const alertExists = await checkAlertExists({
-    //   userId,
-    //   field,
-    //   appId,
-    // });
-    // if (alertExists) {
-    //   console.log(
-    //     `Alert already exists for user ${userId} and field ${field}. Skipping email.`
-    //   );
-    //   return;
-    // }
+    const alertExists = await checkAlertExists({
+      userId,
+      field,
+      appId,
+    });
+    if (alertExists) {
+      console.log(
+        `Alert already exists for user ${userId} and field ${field}. Skipping email.`,
+      );
+      return;
+    }
 
     // send email to user if not sent before
     console.log(
-      `Sending alert email to user ${userId} for field ${field} with count ${count}.`
+      `Sending alert email to user ${userId} for field ${field} with count ${count}.`,
     );
     const userEmail = await getEmail(userId);
     if (!userEmail) {
@@ -65,7 +65,7 @@ async function job() {
         If this was initiated by you, please ignore this email.
 
         Otherwise, you can access your VaultGuard dashboard to review the activity and take necessary actions.
-        `
+        `,
       );
     }
 
@@ -83,9 +83,9 @@ async function job() {
 }
 
 (async () => {
-  console.log('🔍 Cronjob waiting for Elasticsearch...');
+  console.log("🔍 Cronjob waiting for Elasticsearch...");
   await waitForElasticsearch();
-  console.log('✅ Cronjob starting anomaly detection...');
+  console.log("✅ Cronjob starting anomaly detection...");
 
   let i = 1;
   while (true) {
