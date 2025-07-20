@@ -7,7 +7,7 @@ import { toast } from "../../utils/toast";
 import type { User, Consent, RevokeRequest, Alert } from "../../types";
 
 export const BankDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<"consents" | "revokes" | "alerts">(
+  const [activeTab, setActiveTab] = useState<"consents" | "revokes" | "alerts" | "auditlogs">(
     "consents"
   );
   const [users, setUsers] = useState<User[]>([]);
@@ -203,7 +203,7 @@ export const BankDashboard: React.FC = () => {
       minute: "2-digit",
     });
   };
-
+//all the tabs structure is here
   const renderConsentsTab = () => (
     <div className="space-y-4">
       {!selectedUser ? (
@@ -645,6 +645,36 @@ export const BankDashboard: React.FC = () => {
     </div>
   );
 
+  // Audit Logs Tab
+const renderAuditLogsTab = () => (
+  <div className="space-y-6">
+    <div className="bg-white border border-gray-200 rounded-lg p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-2">Audit Logs</h3>
+      <p className="text-gray-700 mb-6">
+        For now, all audit logs are accessible through Elasticsearch and only authorised persons can view the insights of logs and data using interactive dashboards and graphs.
+      </p>
+      <div className="flex space-x-4">
+        <a
+          href="https://my-elasticsearch-project-ffe17c.kb.ap-southeast-1.aws.elastic.cloud/app/dashboards#/view/e41530a3-8857-48c8-9ee2-0b86fc2debdf?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30d,to:now)"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium"
+        >
+          Consent Logs
+        </a>
+        <a
+          href="https://my-elasticsearch-project-ffe17c.kb.ap-southeast-1.aws.elastic.cloud/app/dashboards#/view/d9b46bb8-f87e-4a87-875c-6727dfe34a7e?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30d,to:now)"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-4 py-2 bg-amber-600 text-white rounded-md hover:bg-amber-700 font-medium"
+        >
+          Tokenize Logs
+        </a>
+      </div>
+    </div>
+  </div>
+);
+
   return (
     <Layout>
       <div className="space-y-6">
@@ -708,6 +738,19 @@ export const BankDashboard: React.FC = () => {
                   <span>All User Alerts</span>
                 </div>
               </button>
+              <button
+                onClick={() => setActiveTab("auditlogs")}
+                className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                  activeTab === "auditlogs"
+                    ? "border-emerald-500 text-emerald-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                }`}
+              >
+                <div className="flex items-center space-x-2">
+                  {/* You can use an icon here if desired */}
+                  <span>Audit Logs</span>
+                </div>
+              </button>
             </nav>
           </div>
 
@@ -715,6 +758,7 @@ export const BankDashboard: React.FC = () => {
             {activeTab === "consents" && renderConsentsTab()}
             {activeTab === "revokes" && renderRevokesTab()}
             {activeTab === "alerts" && renderAlertsTab()}
+            {activeTab === "auditlogs" && renderAuditLogsTab()}
           </div>
         </div>
       </div>
