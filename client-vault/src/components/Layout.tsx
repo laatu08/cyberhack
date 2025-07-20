@@ -13,14 +13,25 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
   const user = authUtils.getCurrentUser();
 
   const handleLogout = async () => {
+    console.log('🔄 Layout - Logout initiated');
     try {
       authUtils.logout();
+      console.log('✅ Layout - Auth cleared successfully');
       toast.success('Logged out successfully');
+      console.log('🔄 Layout - Navigating to login page');
       navigate('/login');
+      console.log('✅ Layout - Navigation completed');
     } catch (error) {
+      console.error('❌ Layout - Logout failed:', error);
       toast.error('Logout failed');
     }
   };
+
+  // Don't render layout if user is null (during logout transition)
+  if (!user) {
+    console.log('🔄 Layout - User is null, not rendering layout');
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -35,23 +46,21 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
               </div>
             </div>
 
-            {user && (
+            <div className="flex items-center space-x-4">
               <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-4">
-                  <div className="text-sm">
-                    <p className="font-medium text-gray-900">{user.name.toUpperCase()}</p>
-                    <p className="text-gray-500 capitalize">{user.role}</p>
-                  </div>
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center space-x-1 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span>Logout</span>
-                  </button>
+                <div className="text-sm">
+                  <p className="font-medium text-gray-900">{user.name}</p>
+                  <p className="text-gray-500 capitalize">{user.role}</p>
                 </div>
+                <button
+                  onClick={handleLogout}
+                  className="flex items-center space-x-1 px-3 py-2 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                >
+                  <LogOut className="h-4 w-4" />
+                  <span>Logout</span>
+                </button>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </nav>
