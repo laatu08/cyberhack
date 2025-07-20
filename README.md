@@ -335,7 +335,7 @@ allow if {
 
 ## 🔄 Data Flow
 
-### Complete System Data Flow
+### 1. User Registration & Consent Creation
 ```mermaid
 sequenceDiagram
     participant U as User
@@ -343,62 +343,92 @@ sequenceDiagram
     participant B as Bank Service
     participant C as Consent Service
     participant P as Policy Service
+
+    U->>F: 1. Register with email
+    F->>B: 2. Initiate registration
+    B->>B: 3. Find user in DB
+    B->>U: 4. Send OTP via email
+    U->>F: 5. Enter OTP
+    F->>B: 6. Verify OTP + app purpose
+    B->>B: 7. Match OTP & get consent template
+    B->>P: 8. Check policy for each field
+    P->>B: 9. Return allowed fields
+    B->>C: 10. Create consent for allowed fields
+    C->>B: 11. Consent created
+    B->>F: 12. Registration successful
+```
+
+### 2. Data Access & Tokenization
+```mermaid
+sequenceDiagram
+    participant F as Fintech App
+    participant B as Bank Service
+    participant C as Consent Service
+    participant V as Vault Service
+
+    F->>B: 1. Request user data (email + fields)
+    B->>B: 2. Find user & account details
+    loop For each requested field
+        B->>C: 3. Check consent for field
+        C->>B: 4. Consent validation result
+    end
+    B->>V: 5. Tokenize allowed fields
+    V->>B: 6. Return tokens
+    B->>F: 7. Send tokenized data
+    F->>V: 8. Detokenize tokens
+    V->>F: 9. Return actual/masked data
+```
+
+### 3. Consent Revocation Flow
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant VD as Vault Dashboard
+    participant C as Consent Service
+    participant BD as Bank Dashboard
+    participant B as Bank Admin
+
+    U->>VD: 1. Request consent revocation
+    VD->>C: 2. Create revoke request
+    C->>C: 3. Store request (status: pending)
+    BD->>C: 4. Bank views pending requests
+    B->>BD: 5. Approve/Reject request
+    BD->>C: 6. Update request status
+    alt If Approved
+        C->>C: 7. Mark consent as revoked
+
+
+
+
+
+
+
+
+
+
+
+
+    end
+```
+
+### 4. Anomaly Detection & Alerting
+```mermaid
+sequenceDiagram
     participant V as Vault Service
     participant E as Elasticsearch
     participant A as Anomaly Service
-    participant VD as Vault Dashboard
-    participant BD as Bank Dashboard
-    participant BA as Bank Admin
+    participant U as User
+    participant B as Bank
 
-    Note over U,BA: 1. User Registration & Consent Creation
-    U->>F: Register with email
-    F->>B: Initiate registration
-    B->>B: Find user in DB
-    B->>U: Send OTP via email
-    U->>F: Enter OTP
-    F->>B: Verify OTP + app purpose
-    B->>B: Match OTP & get consent template
-    B->>P: Check policy for each field
-    P->>B: Return allowed fields
-    B->>C: Create consent for allowed fields
-    C->>B: Consent created
-    B->>F: Registration successful
-
-    Note over U,BA: 2. Data Access & Tokenization
-    F->>B: Request user data (email + fields)
-    B->>B: Find user & account details
-    loop For each requested field
-        B->>C: Check consent for field
-        C->>B: Consent validation result
-    end
-    B->>V: Tokenize allowed fields
-    V->>E: Log tokenization event
-    V->>B: Return tokens
-    B->>F: Send tokenized data
-    F->>V: Detokenize tokens
-    V->>E: Log detokenization event
-    V->>F: Return actual/masked data
-
-    Note over U,BA: 3. Anomaly Detection & Alerting
+    V->>E: 1. Log tokenization event
     loop Every 10 seconds
-        A->>E: Query for anomalies (>5 accesses in 5min)
-        E->>A: Return suspicious patterns
+        A->>E: 2. Query for anomalies (>5 accesses in 5min)
+        E->>A: 3. Return suspicious patterns
         alt If anomaly detected
-            A->>U: Send email alert to user
-            A->>BD: Alert visible in bank dashboard
-            A->>E: Store alert record
+            A->>U: 4. Send email alert to user
+            A->>B: 5. Alert visible in bank dashboard
+            A->>E: 6. Store alert record
         end
-    end
-
-    Note over U,BA: 4. Consent Revocation Flow
-    U->>VD: Request consent revocation
-    VD->>C: Create revoke request
-    C->>C: Store request (status: pending)
-    BD->>C: Bank views pending requests
-    BA->>BD: Approve/Reject request
-    BD->>C: Update request status
-    alt If Approved
-        C->>C: Mark consent as revoked
     end
 ```
 
