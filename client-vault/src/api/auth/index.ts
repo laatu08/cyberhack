@@ -1,7 +1,5 @@
 import axios from 'axios';
 import type { 
-  RegisterRequest, 
-  RegisterResponse, 
   LoginRequest, 
   LoginResponse, 
   ProfileResponse 
@@ -9,26 +7,6 @@ import type {
 import { authUtils } from '../../utils/auth';
 
 export const authApi = {
-  register: async (data: RegisterRequest): Promise<RegisterResponse> => {
-    console.log('🔄 Auth API - Register request:', { ...data, password: '[HIDDEN]' });
-    
-    try {
-      const response = await axios.post('http://localhost:4000/auth/register', data);
-      console.log('✅ Auth API - Register success:', response.data);
-      return response.data;
-    } catch (error) {
-      console.error('❌ Auth API - Register failed:', error);
-      if (axios.isAxiosError(error)) {
-        console.error('❌ Auth API - Register error details:', {
-          status: error.response?.status,
-          data: error.response?.data,
-          message: error.message
-        });
-      }
-      throw error;
-    }
-  },
-
   login: async (data: LoginRequest): Promise<LoginResponse> => {
     console.log('🔄 Auth API - Login request:', { email: data.email, password: '[HIDDEN]' });
     
