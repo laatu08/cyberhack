@@ -1,6 +1,6 @@
 import express from "express";
 import axios from "axios";
-// import { BANK_SERVICE_URL } from "../config";
+import { APP_ID } from "../config";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -15,6 +15,7 @@ router.post("/", async (req, res) => {
   try {
     const bankResponse=await axios.post(`${BANK_SERVICE_URL}/bank/initiate-registration`, {
       email,
+      appId: APP_ID, // Include APP_ID in the request
     });
     console.log(`Registration initiated for ${email}`);
     console.log(bankResponse);

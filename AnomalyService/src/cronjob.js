@@ -60,12 +60,19 @@ async function job() {
         userEmail,
         "Anomalous activity detected for your account",
         `
-        Anomalous activity was detected for your account.
-        ${appId} tried to access your ${field} quite a few times (${count} times) in the recent time.
-        If this was initiated by you, please ignore this email.
+Hello,
 
-        Otherwise, you can access your VaultGuard dashboard to review the activity and take necessary actions.
-        `,
+We have detected unusual activity on your account.
+
+The application ${appId} attempted to access your ${field} multiple times — specifically ${count} times in a short period.
+
+If you initiated this activity, no further action is required.
+
+However, if this seems suspicious or was not performed by you, we recommend visiting your VaultGuard Dashboard immediately to review the activity and take appropriate action.
+
+Stay safe,  
+VaultGuard Team
+`.trim(),
       );
     }
 
