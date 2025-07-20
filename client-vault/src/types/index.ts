@@ -7,6 +7,7 @@ export interface User {
   updatedAt: string;
 }
 
+
 export interface Consent {
   id: string;
   userId: string;
@@ -26,6 +27,8 @@ export interface RevokeRequest {
   status: 'pending' | 'approved' | 'rejected';
   createdAt: string;
   updatedAt: string;
+  consent:any;
+  user:any;
 }
 
 export interface Alert {
@@ -37,23 +40,6 @@ export interface Alert {
 }
 
 // API Request/Response Types
-export interface RegisterRequest {
-  name: string;
-  email: string;
-  password: string;
-  role: 'user' | 'bank';
-}
-
-export interface RegisterResponse {
-  message: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    role: string;
-  };
-}
-
 export interface LoginRequest {
   email: string;
   password: string;
